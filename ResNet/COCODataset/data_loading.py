@@ -1,14 +1,12 @@
 import json
 import os
-import sys
+import platform
 
 import torch
 import torchvision.transforms as transforms
 from PIL import Image
-from torch.utils.data import Dataset
-
 from pycocotools.coco import COCO
-from tqdm import tqdm
+from torch.utils.data import Dataset
 
 data_transform = {
     'train': transforms.Compose([
@@ -85,8 +83,16 @@ class COCODataset(Dataset):
 
 
 if __name__ == '__main__':
-    COCO_train = COCODataset('C:\\Users\\stone\\Desktop\\python_project\\dataset\\COCO2017', mode='train')
+
+    root_dir = '../datasets/COCO2017'
+    os_name = platform.system()
+    if os_name == 'Windows':
+        root_dir = root_dir.replace('/', '\\')
+    if not os.path.isdir(root_dir):
+        raise OSError("未找到COCO2017")
+
+    COCO_train = COCODataset(root_dir, mode='train')
     train_loader = torch.utils.data.DataLoader(COCO_train, batch_size=1, shuffle=True)
-    COCO_val = COCODataset('C:\\Users\\stone\\Desktop\\python_project\\dataset\\COCO2017', mode='val')
+    COCO_val = COCODataset(root_dir, mode='val')
     val_loader = torch.utils.data.DataLoader(COCO_val, batch_size=1, shuffle=True)
     pass

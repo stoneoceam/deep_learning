@@ -1,4 +1,5 @@
 import os
+import platform
 import sys
 
 import torch
@@ -14,6 +15,14 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(device)
 
 net = resnet50()
+
+root_dir = '../datasets/COCO2017'
+os_name = platform.system()
+if os_name == 'Windows':
+    root_dir = root_dir.replace('/', '\\')
+if not os.path.isdir(root_dir):
+    raise OSError("未找到COCO2017")
+
 
 COCO_train = COCODataset('C:\\Users\\stone\\Desktop\\python_project\\dataset\\COCO2017', mode='train')
 COCO_val = COCODataset('C:\\Users\\stone\\Desktop\\python_project\\dataset\\COCO2017', mode='val')
@@ -34,7 +43,11 @@ net.to(device)
 
 loss_function = nn.CrossEntropyLoss(ignore_index=-1)  # 忽略为-1的标签
 optimizer = optim.Adam(net.parameters(), lr=0.001)
+
 save_path = 'params'
+if not os.path.exists(save_path):
+    os.mkdir(save_path)
+
 
 epochs = 100
 best_acc = 0.0
