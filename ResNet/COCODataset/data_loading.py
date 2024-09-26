@@ -84,7 +84,7 @@ class COCODataset(Dataset):
 
 if __name__ == '__main__':
 
-    root_dir = '../datasets/COCO2017'
+    root_dir = '../../datasets/COCO2017'
     os_name = platform.system()
     if os_name == 'Windows':
         root_dir = root_dir.replace('/', '\\')

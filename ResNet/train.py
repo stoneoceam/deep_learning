@@ -23,9 +23,8 @@ if os_name == 'Windows':
 if not os.path.isdir(root_dir):
     raise OSError("未找到COCO2017")
 
-
-COCO_train = COCODataset('C:\\Users\\stone\\Desktop\\python_project\\dataset\\COCO2017', mode='train')
-COCO_val = COCODataset('C:\\Users\\stone\\Desktop\\python_project\\dataset\\COCO2017', mode='val')
+COCO_train = COCODataset(root_dir, mode='train')
+COCO_val = COCODataset(root_dir, mode='val')
 
 batch_size = 32
 train_loader = torch.utils.data.DataLoader(COCO_train, batch_size=batch_size, shuffle=True)
@@ -47,7 +46,6 @@ optimizer = optim.Adam(net.parameters(), lr=0.001)
 save_path = 'params'
 if not os.path.exists(save_path):
     os.mkdir(save_path)
-
 
 epochs = 100
 best_acc = 0.0
