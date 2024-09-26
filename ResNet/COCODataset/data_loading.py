@@ -24,8 +24,6 @@ data_transform = {
     ])
 }
 
-data_root = '../data/'
-
 
 class COCODataset(Dataset):
     def __init__(self, root_dir, mode='train'):

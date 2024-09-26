@@ -1,3 +1,4 @@
+import json
 import os
 import platform
 import sys
@@ -16,8 +17,8 @@ print(device)
 
 net = resnet50()
 # url="https://download.pytorch.org/models/resnet50-11ad3fa6.pth" 可以从https://github.com/pytorch/vision/blob/main/torchvision/models/resnet.py获取
-model_weight_path = 'resnet50-11ad3fa6.pth'
-net.load_state_dict(torch.load(model_weight_path, map_location='cpu'))
+# model_weight_path = 'resnet50-11ad3fa6.pth'
+# net.load_state_dict(torch.load(model_weight_path, map_location='cpu'))
 
 root_dir = '../datasets/COCO2017'
 os_name = platform.system()
@@ -32,9 +33,11 @@ COCO_val = COCODataset(root_dir, mode='val')
 batch_size = 32
 train_loader = torch.utils.data.DataLoader(COCO_train, batch_size=batch_size, shuffle=True)
 val_loader = torch.utils.data.DataLoader(COCO_val, batch_size=batch_size, shuffle=True)
-
 val_num = len(COCO_val)
-classes = COCO_train.label2cat
+
+classes_path = 'classes.json'
+with open(classes_path, 'r') as file:
+    classes = json.load(file)
 print(classes)
 
 # 如果需要修改分类的类别数 只需要在追后追加一个全连接层
@@ -44,16 +47,16 @@ net.fc = nn.Linear(in_features=inchannel, out_features=len(classes))
 net.to(device)
 
 loss_function = nn.CrossEntropyLoss(ignore_index=-1)  # 忽略为-1的标签
-optimizer = optim.Adam(net.parameters(), lr=0.001)
+optimizer = optim.Adam(net.parameters(), lr=0.0001)
 
-save_path = 'params'
+save_path = 'models'
 if not os.path.exists(save_path):
     os.mkdir(save_path)
 
-epochs = 1
+epochs = 90
 best_acc = 0.0
 i = 0
-for epoch in range(1, epochs):
+for epoch in range(1, epochs + 1):
     print(f'----------{epoch}/{epochs}----------')
     # train
     net.train()
