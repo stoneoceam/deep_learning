@@ -15,6 +15,9 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(device)
 
 net = resnet50()
+# url="https://download.pytorch.org/models/resnet50-11ad3fa6.pth" 可以从https://github.com/pytorch/vision/blob/main/torchvision/models/resnet.py获取
+model_weight_path = 'resnet50-11ad3fa6.pth'
+net.load_state_dict(torch.load(model_weight_path, map_location='cpu'))
 
 root_dir = '../datasets/COCO2017'
 os_name = platform.system()
@@ -47,7 +50,7 @@ save_path = 'params'
 if not os.path.exists(save_path):
     os.mkdir(save_path)
 
-epochs = 100
+epochs = 1
 best_acc = 0.0
 i = 0
 for epoch in range(1, epochs):

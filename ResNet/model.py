@@ -84,9 +84,14 @@ class ResNet(nn.Module):
         self.layer2 = self._make_layer(block, 128, blocks_num[1], stride=2)
         self.layer3 = self._make_layer(block, 256, blocks_num[2], stride=2)
         self.layer4 = self._make_layer(block, 512, blocks_num[3], stride=2)
+
         if self.include_top:
             self.svgpool = nn.AdaptiveAvgPool2d((1, 1))  # output size = (1,1)
             self.fc = nn.Linear(512 * block.expansion, num_classes)
+
+        for m in self.modules():
+            if isinstance(m, nn.Conv2d):
+                nn.init.kaiming_normal_(m.weight, mode='fan_out', nonlinearity='relu')
 
     def _make_layer(self, block, channel, blocks_num, stride=1):  # channel为每层中第一层的卷积核个数
         downsample = None
@@ -132,7 +137,7 @@ def resnet34(num_classes=1000, include_top=True):
 
 
 def resnet50(num_classes=1000, include_top=True):
-    return ResNet(ResidualBlock2, [3, 4, 23, 3], num_classes, include_top)
+    return ResNet(ResidualBlock2, [3, 4, 6, 3], num_classes, include_top)
 
 
 def resnet101(num_classes=1000, include_top=True):
